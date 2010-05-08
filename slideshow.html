@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Perigee Slideshow</title>
+</head>
+<body>
+<h1>Perigee Slideshow</h1>
+v1.1, last updated December 9 2003
+<br>
+(C) 2003 by Jeremy Stanley
+<p>Perigee Slideshow is a command line program that searches a
+directory for
+supported graphic files and displays them in a slideshow. It has the
+ability to search subdirectories, as well as to sort files by creation
+date, modification date, or path name. Alternatively, it will accept a
+prebuilt list of image files from a file or standard input.
+</p>
+<h3>DOWNLOAD</h3>
+<ul>
+  <li> <a
+ href="http://www.xmission.com/%7Ejstanley/slideshow-setup-1.1.exe">Windows
+installer</a> (Includes graphical front end)
+  </li>
+  <li> <a
+ href="http://www.xmission.com/%7Ejstanley/slideshow-source-1.1.zip">Source
+code</a> (GPL licensed; requires <a href="http://libsdl.org">SDL
+development libraries</a>, compiles on Windows on Linux)
+  </li>
+</ul>
+The latest version of this document can be found <a
+ href="http://www.xmission.com/%7Ejstanley/slideshow.html">here</a>.
+<h3>RUNTIME CONTROLS</h3>
+<table>
+  <tbody>
+    <tr>
+      <td width="25%">Next slide</td>
+      <td>Page Down, Enter, Space, right arrow key, left mouse button,
+or mouse wheel down</td>
+    </tr>
+    <tr>
+      <td width="25%">Prev slide</td>
+      <td>Page Up, left arrow key, right mouse button, or mouse wheel up</td>
+    </tr>
+    <tr>
+      <td width="25%">First slide</td>
+      <td>Home</td>
+    </tr>
+    <tr>
+      <td width="25%">Last slide</td>
+      <td>End</td>
+    </tr>
+    <tr>
+      <td width="25%">Toggle timer</td>
+      <td>t</td>
+    </tr>
+    <tr>
+      <td width="25%">Exit</td>
+      <td>Esc</td>
+    </tr>
+  </tbody>
+</table>
+<p>Note that the auto-advance timer will automatically stop if you
+manually change
+slides. You can press 't' to start it up again.
+</p>
+<h3>COMMAND LINE USAGE</h3>
+<pre>slideshow [options] picture_path<br></pre>
+<p><i>picture_path</i> is either a directory or a text file containing
+a list
+of image files, with one image file per line.
+</p>
+<p>Specify - for <i>picture_path</i> to read a list of files on stdin.
+</p>
+<p><b>Options:</b>
+<table>
+  <tbody>
+    <tr>
+      <td width="25%">-width X</td>
+      <td>Set screen width to X pixels (default 800)</td>
+    </tr>
+    <tr>
+      <td>-height Y</td>
+      <td>Set screen height to Y pixels (default 600)</td>
+    </tr>
+    <tr>
+      <td>-window</td>
+      <td>Run in a window (dimensions specified by -width and -height)</td>
+    </tr>
+    <tr>
+      <td>-name</td>
+      <td>Display image filename</td>
+    </tr>
+    <tr>
+      <td>-advance X</td>
+      <td>Automatically advance images every X seconds</td>
+    </tr>
+    <tr>
+      <td>-random</td>
+      <td>Randomize picture order</td>
+    </tr>
+    <tr>
+      <td>-ready</td>
+      <td>Show indicator (small green square) when next image is ready</td>
+    </tr>
+    <tr>
+      <td>-tran XXX</td>
+      <td>Use transition effect between slides, where XXX is one of the
+following:</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>
+      <ul>
+        <li>fade
+        </li>
+        <li>checkers
+        </li>
+        <li>blinds
+        </li>
+        <li>uncover
+        </li>
+        <li>random
+        </li>
+      </ul>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"><b>The following options apply only when
+picture_path is a directory:</b></td>
+    </tr>
+    <tr>
+      <td>-recurse</td>
+      <td>Recurse into subdirectories</td>
+    </tr>
+    <tr>
+      <td>-sort S</td>
+      <td>Sort file list, where S is one of the following:</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>
+      <table>
+        <tbody>
+          <tr>
+            <td width="25%">n+</td>
+            <td>Name ascending (a-z)</td>
+          </tr>
+          <tr>
+            <td>n-</td>
+            <td>Name descending (z-a)</td>
+          </tr>
+          <tr>
+            <td>cd+</td>
+            <td>Create date ascending (oldest first)</td>
+          </tr>
+          <tr>
+            <td>cd-</td>
+            <td>Create date descending (newest first)</td>
+          </tr>
+          <tr>
+            <td>md+</td>
+            <td>Modify date ascending (oldest first)</td>
+          </tr>
+          <tr>
+            <td>md-</td>
+            <td>Modify date descending (newest first)</td>
+          </tr>
+        </tbody>
+      </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<h3>SUPPORTED IMAGE FORMATS</h3>
+<p>Perigee Slideshow uses the SDL_image library to load pictures. When
+searching
+directories, it looks for files matching these extensions (case
+insensitively):
+</p>
+<ul>
+  <li>TrueVision Targa (.tga)
+  </li>
+  <li>Windows Bitmap (.bmp)
+  </li>
+  <li>Portable Anymap (.pnm, .pbm, .pgm, .ppm)
+  </li>
+  <li>X11 Pixmap (.xpm)
+  </li>
+  <li>PC Paintbrush (.pcx)
+  </li>
+  <li>CompuServe Graphics Interchange Format (.gif)
+  </li>
+  <li>Joint Photographic Experts Group JFIF format (.jpg or .jpeg)
+  </li>
+  <li>Tagged Image File Format (.tif or .tiff)
+  </li>
+  <li>LBM Interleaved Bitmap (.lbm or .iff)
+  </li>
+  <li>Portable Network Graphics (.png)
+  </li>
+</ul>
+<h3>COMPILING</h3>
+<p>Visual C++ 6.0 project files and a Makefile for UNIX-like systems
+are
+included. slideshow has been compiled and tested successfully using
+VC6++ on Windows 2000, and gcc 3.2 on Red Hat Linux.
+</p>
+<p>SDL 1.2.5 and SDL_image 1.2.3 development libraries
+are required on both platforms.
+</p>
+<p>A Win32 graphical front end is also provided in the ssfront
+subdirectory.
+I have no plans to create a graphical front end for any other platform,
+but you're more than welcome to do so if you want to.
+<a name="license">
+<h3>LICENSE</h3>
+</a>
+</p>
+<p>This program is free software licensed under the terms of the
+GNU General Public License. As such, it comes with no warranty. See
+license.txt, enclosed in the source distribution, for details.
+</p>
+<p><b>Note to The SCO Group:</b> <br>
+Since you're opposed to the whole "free lunch" idea, I, as the
+copyright holder of this program, will graciously allow you to purchase
+a proprietary license for this program for the paltry sum of $699 per
+CPU. That way, you can be safe from the evils of the General Public
+License. Of course, you'll need to sign an NDA to see
+the terms of the license before you buy it. Oh, and you should be aware
+that this program uses libraries licensed under the GNU LGPL,
+and I'm not going to indemnify you against any potential IP violations
+in them.
+</p>
+<h3>CONTACT INFORMATION</h3>
+<a href="http://www.xmission.com/%7Ejstanley/mail.html">http://www.xmission.com/~jstanley/mail.html</a>
+</body>
+</html>
