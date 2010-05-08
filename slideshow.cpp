@@ -571,8 +571,6 @@ SDL_Surface *slideshow::convert_to_true_color(SDL_Surface *in)
 	static const Uint32 surface_convert_mask 
 		= SDL_SWSURFACE | SDL_HWSURFACE | SDL_SRCCOLORKEY | SDL_SRCALPHA;
 
-	Uint32 flags = in->flags & surface_convert_mask;
-
 	return SDL_ConvertSurface(in, &m_true_color_format, surface_convert_mask);
 }
 
