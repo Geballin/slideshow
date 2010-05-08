@@ -69,7 +69,7 @@ slideshow::user_command slideshow::wait_for_command()
 			
 					case SDLK_PAGEDOWN:
 					case SDLK_RIGHT:
-					case SDLK_RETURN:
+					// case SDLK_RETURN:
 						return c_next_slide;
 			
 					case SDLK_HOME:
@@ -77,7 +77,15 @@ slideshow::user_command slideshow::wait_for_command()
 			
 					case SDLK_END:
 						return c_last_slide;
-								
+						
+					case SDLK_n:
+						m_options->display_name = !m_options->display_name;
+						return c_redraw;
+					
+					case SDLK_c:
+						m_options->display_number = !m_options->display_number;
+						return c_redraw;
+					
 					// Delete the picture
 					case SDLK_d:
 					case SDLK_DELETE:

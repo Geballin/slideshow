@@ -34,7 +34,11 @@
 // The value of the top-left pixel in the font bitmap will be
 //  considered transparent.  Anything else is opaque.
 
+#ifdef MACOSX
 #include <SDL/SDL.h>
+#else
+#include <SDL.h>
+#endif
 
 class SDLFont
 {

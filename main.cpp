@@ -21,6 +21,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "file_list.h"
 #include "slideshow.h"
@@ -58,7 +59,7 @@ struct arguments
 				"-height Y  : Set screen height to Y pixels (default the actual screen resolution)\n"
 				"-window    : Run in a window (dimensions specified by -width and -height)\n"
 				"-name      : Display image filename\n"
-				"-number	: Display image number indicator\n"
+				"-number    : Display image number indicator\n"
 				"-advance X : Automatically advance images every X seconds\n"
 				"-repeat    : Repeat slideshow\n"
 				"-random    : Randomize picture order\n"
@@ -73,7 +74,17 @@ struct arguments
 				"             cd+ : Create date ascending (oldest first)\n"
 				"             cd- : Create date descending (newest first)\n"
 				"             md+ : Mofify date ascending (oldest first)\n"
-				"             md- : Mofify date descending (newest first)\n\n";
+				"             md- : Mofify date descending (newest first)\n\n"
+			"During execution:\n"
+				"Arrow key right : next picture\n"
+				"Arrow key left  : previous picture\n"
+				"Home key        : first picture\n"
+				"End key         : last picture\n"
+				"t key or space  : start/stop timer\n"
+				"d key or delete : delete picture\n"
+				"n key           : start/stop displaying picture name\n"
+				"c key           : start/stop displaying image number indicator\n"
+				"Escape key      : quit\n\n";
 	}
 
 	arguments(int argc, char **argv) : 

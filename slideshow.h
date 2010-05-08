@@ -9,7 +9,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#ifdef MACOSX
 #include <SDL/SDL.h>
+#else
+#include <SDL.h>
+#endif
+
 #include "cache.h"
 
 #define MN_SLIDESHOW_VERSION	0.8
