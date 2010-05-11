@@ -80,6 +80,7 @@ private:
 
 	SDL_Surface *m_sdl;
 	SDLFont   *m_font;
+	SDL_Surface *m_imageSurface;
 
 	bool init_graphics();
 
@@ -92,8 +93,10 @@ private:
 	
 	SDL_Surface *scale_image(SDL_Surface *in, int w, int h);
 	void bilinearpix(SDL_Surface *in, double u, double v, Uint8 *c);
+	
+	void reset_zoom(void);
 
-	void slideshow::draw_centered_dialog_box(SDLFont *font, const std::string &text, int x_arg, int y_arg);
+	void draw_centered_dialog_box(SDLFont *font, const std::string &text, int x_arg, int y_arg);
 	void draw_shadow_text(SDLFont &font, const std::string &text, int x, int y, int r, int g, int b);
 	void center_shadow_text(SDLFont &font, const std::string &text, int x, int y, int r, int g, int b);
 
@@ -109,6 +112,9 @@ private:
 	int         m_image_index;
 	int         m_prev_image_index;
 	Uint32      m_frame_color;
+	int         m_zoom_percent;
+	bool        m_zoom_mode;
+	SDL_Surface *image_in_zoom;
 
 	enum user_command {
 		c_next_slide,
@@ -118,6 +124,7 @@ private:
 		c_toggle_timer,
 		c_redraw,
 		c_timer_advance,
+		c_zoom,
 		c_quit
 	};
 
@@ -126,7 +133,7 @@ private:
 	void start_timer();
 	void stop_timer();
 
-	void show_image();
+	void show_image(SDL_Surface *image);
 
 	// === Image cache =========================================
 
