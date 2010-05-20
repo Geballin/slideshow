@@ -86,12 +86,14 @@ slideshow::user_command slideshow::wait_for_command()
 						m_options->display_number = !m_options->display_number;
 						return c_redraw;
 					
+					case SDLK_p:
 					case SDLK_PLUS:
-						m_zoom+=10;
+						m_zoom_percent+=10;
 						return c_zoom;
 					
+					case SDLK_m:
 					case SDLK_MINUS:
-						m_zoom-=10;
+						m_zoom_percent-=10;
 						return c_zoom;
 					
 					// Delete the picture
@@ -185,6 +187,7 @@ void slideshow::stop_timer()
 bool slideshow::run()
 {
 	SDL_Surface *image;
+	image_in_zoom = NULL;
 	if ( !init_graphics() )
 	{
 		return false;
@@ -204,8 +207,11 @@ bool slideshow::run()
 	{
 		if(!m_file_list->count())
 			return true;
-		if(m_prev_image_index != m_image_index)
+		if(m_prev_image_index != m_image_index){
 			image = m_image_cache->lookup(m_image_index);
+			reset_zoom();
+		}
+			
 		show_image(image);
 		m_prev_image_index = m_image_index;
 
@@ -243,12 +249,10 @@ bool slideshow::run()
 			case c_first_slide:
 				stop_timer();
 				m_image_index = 0;
-				reset_zoom();
 				break;
 			case c_last_slide:
 				stop_timer();
 				m_image_index = m_file_list->count() - 1;
-				reset_zoom();
 				break;
 			case c_prev_slide:
 				stop_timer();
@@ -256,7 +260,6 @@ bool slideshow::run()
 					m_image_index--;
 				else if(m_options->repeat)
 					m_image_index= m_file_list->count() - 1;
-				reset_zoom();
 				break;
 			case c_next_slide:
 				stop_timer();
@@ -266,16 +269,17 @@ bool slideshow::run()
 					m_image_index++;
 				else if(m_options->repeat)
 					m_image_index=0;
-				reset_zoom();
 				break;
 			case c_redraw:
 				break;
 			case c_zoom:
 				stop_timer();
 				m_zoom_mode = true;
-				if(!image_in_zoom)
-					image_in_zoom = IMG_Load(m_file_list->get(index).c_str());
-				image = scale_image(image_in_zoom, m_options->width * m_zoom / 100, m_options->height * m_zoom / 100);
+				if(!image_in_zoom){
+					std::string filename = m_file_list->get(m_image_index);
+					image_in_zoom = IMG_Load(filename.c_str());
+				}
+				image = scale_image(image_in_zoom, m_options->width * m_zoom_percent / 100, m_options->height * m_zoom_percent / 100);
 		}
 
 		// stop the auto-advance when the last picture is about to be shown
