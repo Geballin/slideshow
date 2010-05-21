@@ -341,6 +341,7 @@ static void CustomApplicationMain (int argc, char **argv)
 - (void) applicationDidFinishLaunching: (NSNotification *) note
 {
     int status;
+    setenv ("SDL_ENABLEAPPEVENTS", "1", 1);
 
     /* Set the working directory to the .app's parent directory */
     [self setupWorkingDirectory:gFinderLaunch];
