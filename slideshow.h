@@ -114,7 +114,9 @@ private:
 	Uint32      m_frame_color;
 	int         m_zoom_percent;
 	bool        m_zoom_mode;
-	SDL_Surface *image_in_zoom;
+	bool        m_image_move;
+	SDL_Surface *m_image_in_zoom;
+	SDL_Rect    m_rect_image;
 
 	enum user_command {
 		c_next_slide,

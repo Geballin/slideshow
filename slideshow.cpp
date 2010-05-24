@@ -88,12 +88,12 @@ slideshow::user_command slideshow::wait_for_command()
 					
 					case SDLK_p:
 					case SDLK_PLUS:
-						m_zoom_percent+=10;
+						m_zoom_percent+=m_zoom_percent/10;
 						return c_zoom;
 					
 					case SDLK_m:
 					case SDLK_MINUS:
-						m_zoom_percent-=10;
+						m_zoom_percent-=m_zoom_percent/10;
 						return c_zoom;
 					
 					// Delete the picture
@@ -104,13 +104,36 @@ slideshow::user_command slideshow::wait_for_command()
 				}
 				break;
 	
-			case SDL_MOUSEBUTTONUP:
-				if ( e.button.button == SDL_BUTTON_LEFT || e.button.button == SDL_BUTTON_WHEELUP)
-					return c_next_slide;
-				else if ( e.button.button == SDL_BUTTON_RIGHT || e.button.button == SDL_BUTTON_WHEELDOWN)
-					return c_prev_slide;
+			case SDL_MOUSEBUTTONDOWN:
+				if (e.button.button == SDL_BUTTON_WHEELUP){
+					m_zoom_percent+=m_zoom_percent/10;
+					return c_zoom;
+				}
+				else if (e.button.button == SDL_BUTTON_WHEELDOWN){
+					m_zoom_percent-=m_zoom_percent/10;
+					return c_zoom;
+				}
+				if ( e.button.button == SDL_BUTTON_LEFT)
+					if(m_zoom_mode)
+						m_image_move = true;
 				break;
-	
+			case SDL_MOUSEBUTTONUP:
+				if ( e.button.button == SDL_BUTTON_LEFT)
+					if(m_zoom_mode)
+						m_image_move = false;
+				break;
+			case SDL_MOUSEMOTION:
+				if(m_image_move){
+					if((m_image_in_zoom->h * m_zoom_percent / 100) > m_options->height)
+						m_rect_image.x-=e.motion.xrel;
+					if((m_image_in_zoom->w * m_zoom_percent / 100) > m_options->width)
+						m_rect_image.y-=e.motion.yrel;
+					if(m_rect_image.y < 0)
+						m_rect_image.y = 0;
+					if(m_rect_image.x < 0)
+						m_rect_image.x = 0;
+				}
+				return c_redraw;
 			case SDL_USEREVENT:
 				return c_timer_advance;
 	
@@ -187,7 +210,7 @@ void slideshow::stop_timer()
 bool slideshow::run()
 {
 	SDL_Surface *image;
-	image_in_zoom = NULL;
+	m_image_in_zoom = NULL;
 	if ( !init_graphics() )
 	{
 		return false;
@@ -275,11 +298,19 @@ bool slideshow::run()
 			case c_zoom:
 				stop_timer();
 				m_zoom_mode = true;
-				if(!image_in_zoom){
+				if(!m_image_in_zoom){
+					int zoom_w, zoom_h;
 					std::string filename = m_file_list->get(m_image_index);
-					image_in_zoom = IMG_Load(filename.c_str());
+					m_image_in_zoom = IMG_Load(filename.c_str());
+					zoom_w = ((float)(m_options->width) / (m_image_in_zoom->w) * 10)*10+m_zoom_percent;
+					zoom_h = ((float)(m_options->height) / (m_image_in_zoom->h) * 10)*10+m_zoom_percent;
+					if(zoom_h > zoom_w)
+						m_zoom_percent = zoom_w;
+					else
+						m_zoom_percent = zoom_h;
 				}
-				image = scale_image(image_in_zoom, m_options->width * m_zoom_percent / 100, m_options->height * m_zoom_percent / 100);
+				image = scale_image(m_image_in_zoom, m_image_in_zoom->w * m_zoom_percent / 100, m_image_in_zoom->h * m_zoom_percent / 100);
+				break;
 		}
 
 		// stop the auto-advance when the last picture is about to be shown
@@ -292,13 +323,17 @@ bool slideshow::run()
 
 
 void slideshow::reset_zoom(void){
-	m_zoom_percent = (float)(m_image_cache->lookup(m_image_index)->w) / (m_options->width) * 10;
-	m_zoom_percent *= 10;
+	m_zoom_percent = 0;
+	m_image_move = false;
 	m_zoom_mode = false;
-	if(image_in_zoom){
-		SDL_FreeSurface(image_in_zoom);
-		image_in_zoom = NULL;
+	if(m_image_in_zoom){
+		SDL_FreeSurface(m_image_in_zoom);
+		m_image_in_zoom = NULL;
 	}
+	m_rect_image.w = m_options->width;
+	m_rect_image.h = m_options->height;
+	m_rect_image.x = 0;
+	m_rect_image.y = 0;
 }
 
 
@@ -407,6 +442,9 @@ SDL_Surface *slideshow::create_placeholder_image( const std::string &filename, c
 
 void slideshow::show_image(SDL_Surface *image)
 {
+	/*** Erease screen ***/
+	SDL_FillRect(m_sdl, NULL, SDL_MapRGB(m_sdl->format, 0, 0, 0));
+	
 	if ( image )
 	{
 		if ( (m_options->transition != tran_none) && (m_prev_image_index >= 0) && (m_image_index != m_prev_image_index) )
@@ -414,8 +452,16 @@ void slideshow::show_image(SDL_Surface *image)
 			SDL_Surface *prev_image = m_image_cache->lookup(m_prev_image_index);
 			do_transition(prev_image, image);
 		}
-
-		SDL_BlitSurface(image, NULL, m_sdl, NULL);
+		SDL_Rect display_rect;
+		display_rect.w = m_options->width;
+		display_rect.h = m_options->height;
+		display_rect.x = 0;
+		display_rect.y = 0;
+		if(image->w < m_options->width)
+			display_rect.x = (m_options->width - image->w) / 2;
+		if(image->h < m_options->height)
+			display_rect.y = (m_options->height - image->h) / 2;
+		SDL_BlitSurface(image, &m_rect_image, m_sdl, &display_rect);
 	}
 	else
 	{
@@ -423,7 +469,6 @@ void slideshow::show_image(SDL_Surface *image)
 		// a placeholder in the image cache which will contain a somewhat
 		// more useful error message.  We'll get this if some surface convert/
 		// scaling/framing operation failed, for whatever reason.
-		SDL_FillRect(m_sdl, NULL, SDL_MapRGB(m_sdl->format, 0, 0, 0));
 		center_shadow_text(*m_font, "[unspeakable error]", m_options->width / 2, m_options->height / 2 - 7, 255, 127, 127);
 	}
 
@@ -434,7 +479,6 @@ void slideshow::show_image(SDL_Surface *image)
 	{
 		draw_picture_number();
 	}
-
 	SDL_Flip(m_sdl);
 }
 
