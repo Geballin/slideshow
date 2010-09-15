@@ -538,6 +538,7 @@ void slideshow::confirm_delete()
 				if(m_file_list->count()<m_image_index + 1)
 					m_image_index--;
 				m_image_cache->flush();
+				m_prev_image_index = 0;
 			}
 			return;
 		}
