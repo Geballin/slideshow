@@ -95,6 +95,7 @@ private:
 	void bilinearpix(SDL_Surface *in, double u, double v, Uint8 *c);
 	
 	void reset_zoom(void);
+	void correct_image_rect(SDL_Surface *image);
 
 	void draw_centered_dialog_box(SDLFont *font, const std::string &text, int x_arg, int y_arg);
 	void draw_shadow_text(SDLFont &font, const std::string &text, int x, int y, int r, int g, int b);
@@ -117,6 +118,7 @@ private:
 	bool        m_image_move;
 	SDL_Surface *m_image_in_zoom;
 	SDL_Rect    m_rect_image;
+	SDL_Rect    m_display_rect;
 
 	enum user_command {
 		c_next_slide,

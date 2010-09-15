@@ -125,13 +125,9 @@ slideshow::user_command slideshow::wait_for_command()
 			case SDL_MOUSEMOTION:
 				if(m_image_move){
 					if((m_image_in_zoom->h * m_zoom_percent / 100) > m_options->height)
-						m_rect_image.x-=e.motion.xrel;
-					if((m_image_in_zoom->w * m_zoom_percent / 100) > m_options->width)
 						m_rect_image.y-=e.motion.yrel;
-					if(m_rect_image.y < 0)
-						m_rect_image.y = 0;
-					if(m_rect_image.x < 0)
-						m_rect_image.x = 0;
+					if((m_image_in_zoom->w * m_zoom_percent / 100) > m_options->width)
+						m_rect_image.x-=e.motion.xrel;
 				}
 				return c_redraw;
 			case SDL_USEREVENT:
@@ -322,6 +318,38 @@ bool slideshow::run()
 }
 
 
+void slideshow::correct_image_rect(SDL_Surface *image){
+	m_rect_image.w = m_options->width;
+	m_rect_image.h = m_options->height;
+	m_display_rect.w = m_options->width;
+	m_display_rect.h = m_options->height;
+	
+	m_display_rect.y = 0;
+	m_display_rect.x = 0;
+
+	if(m_rect_image.y > (image->h - m_options->height))
+		m_rect_image.y = (image->h - m_options->height);
+	if(m_rect_image.x > (image->w - m_options->width))
+		m_rect_image.x = (image->w - m_options->width);
+	if(image->h < m_options->height){
+		m_rect_image.y = 0;
+		m_display_rect.y = (m_options->height/2 - image->h/2);
+		m_rect_image.h = image->h;
+		m_display_rect.h = image->h;
+	}
+	if(image->w < m_options->width){
+		m_rect_image.x = 0;
+		m_display_rect.x = (m_options->width/2 - image->w/2);
+		m_rect_image.w = image->w;
+		m_display_rect.w = image->w;
+	}
+	if(m_rect_image.y < 0)
+		m_rect_image.y = 0;
+	if(m_rect_image.x < 0)
+		m_rect_image.x = 0;
+}
+
+
 void slideshow::reset_zoom(void){
 	m_zoom_percent = 0;
 	m_image_move = false;
@@ -330,10 +358,10 @@ void slideshow::reset_zoom(void){
 		SDL_FreeSurface(m_image_in_zoom);
 		m_image_in_zoom = NULL;
 	}
-	m_rect_image.w = m_options->width;
-	m_rect_image.h = m_options->height;
 	m_rect_image.x = 0;
 	m_rect_image.y = 0;
+	m_display_rect.x = 0;
+	m_display_rect.y = 0;
 }
 
 
@@ -444,7 +472,7 @@ void slideshow::show_image(SDL_Surface *image)
 {
 	/*** Erease screen ***/
 	SDL_FillRect(m_sdl, NULL, SDL_MapRGB(m_sdl->format, 0, 0, 0));
-	
+	correct_image_rect(image);
 	if ( image )
 	{
 		if ( (m_options->transition != tran_none) && (m_prev_image_index >= 0) && (m_image_index != m_prev_image_index) )
@@ -452,16 +480,7 @@ void slideshow::show_image(SDL_Surface *image)
 			SDL_Surface *prev_image = m_image_cache->lookup(m_prev_image_index);
 			do_transition(prev_image, image);
 		}
-		SDL_Rect display_rect;
-		display_rect.w = m_options->width;
-		display_rect.h = m_options->height;
-		display_rect.x = 0;
-		display_rect.y = 0;
-		if(image->w < m_options->width)
-			display_rect.x = (m_options->width - image->w) / 2;
-		if(image->h < m_options->height)
-			display_rect.y = (m_options->height - image->h) / 2;
-		SDL_BlitSurface(image, &m_rect_image, m_sdl, &display_rect);
+		SDL_BlitSurface(image, &m_rect_image, m_sdl, &m_display_rect);
 	}
 	else
 	{
