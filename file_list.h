@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include <time.h>
+#include <string.h>
 #include <string>
 #include <vector>
 #include <set>

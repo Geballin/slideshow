@@ -15,6 +15,7 @@
 #include <SDL.h>
 #endif
 
+#include <string>
 #include "cache.h"
 
 #define MN_SLIDESHOW_VERSION	0.8
