@@ -1,6 +1,6 @@
 /*
-    MacNiaque Slideshow
-    2010 - MacNiaque - G. Ballin - Based on Jeremy Stanley sources
+    Slideshow
+    2010-2018 - Géballin -  Based on Jeremy Stanley sources
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License 
@@ -44,7 +44,7 @@ struct arguments
 
 	void print_usage()
 	{
-		cout << endl << "MacNiaque Slideshow\n(c) 2010 - MacNiaque - G. Ballin" << endl;
+		cout << endl << "Slideshow\n 2010-2018 - Géballin" << endl;
 		cout << "http://macniaque.free.fr" << endl;
 		cout << "Version " << MN_SLIDESHOW_VERSION << "\n" << endl;
 		cout << "Based on Perigee Slideshow\n(c) sources by Jeremy Stanley\n" << endl;
@@ -84,6 +84,7 @@ struct arguments
 				"d key or delete : delete picture\n"
 				"n key           : start/stop displaying picture name\n"
 				"c key           : start/stop displaying image number indicator\n"
+				"Mouse wheel     : zoom picture\n"
 				"Escape key      : quit\n\n";
 	}
 
@@ -269,8 +270,8 @@ int main(int argc, char **argv)
 		args.print_usage();
 		return 1;
 	}
-	cout << endl << "MacNiaque Slideshow\n(c) 2010 - MacNiaque - G. Ballin" << endl;
-	cout << "http://macniaque.free.fr\nLaunch \"slideshow -h\" to see the help screen" << endl;
+	cout << endl << "Slideshow\n 2010-2018 - Géballin" << endl;
+	cout << "Launch \"slideshow -h\" to see the help screen" << endl;
 		
 
 	file_list fl;

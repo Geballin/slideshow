@@ -1,4 +1,4 @@
-// Copyright (C) 2010 MacNiaque - 2003  Jeremy Stanley
+// 2010-2018 Géballin - 2003  Jeremy Stanley
 // This is free software licensed under the GNU GPL; see COPYING for details
 
 #include "slideshow.h"
