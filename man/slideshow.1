@@ -1,0 +1,117 @@
+.TH slideshow 1 2018-12-10
+.SH NAME
+slideshow \- View images of a folder as a slideshow
+ 2010-2018 - Géballin
+
+.SH SYNOPSIS
+.B slideshow
+[\fIOPTIONS\fR]
+[\fIPICTURES_PATH\fR]
+
+.SH DESCRIPTION
+.B slideshow 
+create a slideshow with the images in a directory or listed in a file and show it in a window or fullscreen.
+This is the perfect tool for seeing pictures from a directory when ou are in a terminal : keyboard driven, quick, easy to use.
+
+.SH OPTIONS
+.TP
+picture_path is either a directory or a text file containing a list of image files, with one image file per line.  Specify - to read a list of files on stdin.
+.B If no picture_path are specified, the actual path is used.
+
+.PP
+.B \-h
+Draw help screen
+.TP
+.BI \-width \ X
+Set screen width to X pixels (default the actual screen resolution)
+.TP
+.BI \-height \ Y
+Set screen height to Y pixels (default the actual screen resolution)
+.TP
+.B \-window
+Run in a window (dimensions specified by -width and -height)
+.TP
+.B \-name
+Display image filename
+.TP
+.B \-number
+Display image number indicator
+.TP
+.BI \-advance \ X
+Automatically advance images every X seconds
+.TP
+.B \-repeat
+Repeat slideshow
+.TP
+.B \-random
+Randomize picture order
+.TP
+.B \-ready
+Show indicator (small green square) when next image is ready
+.TP
+.BI \-tran \ XXX
+Use a transition effect between slides.  XXX can be one of fade, checkers, blinds, uncover, or random
+
+.TP
+The following options apply only when picture_path is a directory:
+.TP
+.BR \-recurse\fR
+Recurse find into subdirectories
+.TP
+.BR \-sort\fR \fS\fR
+Sort file list, where S is one of the following:
+
+.B n\+
+Name ascending (a-z)
+
+.B n\-
+Name descending (z-a)
+
+.B cd\+
+Create date ascending (oldest first)
+
+.B cd\-
+Create date descending (newest first)
+
+.B md\+
+Mofify date ascending (oldest first)
+
+.B md\-
+Mofify date descending (newest first)
+
+
+.SH USAGE
+.TP
+.BR Arrow\ right\fR
+Next picture
+.TP
+.BR Arrow\ left\fR
+Previous picture
+.TP
+.BR Home
+First picture
+.TP
+.BR End
+Last picture
+.TP
+.BR t \ or \ Space
+Start/stop timer
+.TP
+.BR d \ or \ Selete
+Delete picture
+.TP
+.BR n
+Start/stop displaying picture name
+.TP
+.BR c
+Start/stop displaying image number indicator
+.TP
+.BR Mouse\ wheel\fR
+Zoom picture
+.TP
+.BR Escape\fR
+Quit
+
+.SH BUGS
+Please report them!
+
