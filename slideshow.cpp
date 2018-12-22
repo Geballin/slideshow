@@ -535,10 +535,10 @@ void slideshow::confirm_delete()
 		if(event.type == SDL_KEYDOWN){
 			if(event.key.keysym.sym == SDLK_y){
 				m_file_list->delete_file(m_image_index);
-				if(m_file_list->count()<m_image_index + 1)
+				if(m_file_list->count()<m_image_index + 1 && m_image_index>0)
 					m_image_index--;
 				m_image_cache->flush();
-				m_prev_image_index = 0;
+				m_prev_image_index = -1;
 			}
 			return;
 		}
