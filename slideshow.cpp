@@ -710,27 +710,31 @@ SDL_Surface *slideshow::frame_image(SDL_Surface *in, int w, int h)
 // in must be true color (i.e., have 8 bits per color component)
 SDL_Surface *slideshow::scale_image(SDL_Surface *in, int w, int h)
 {
+        SDL_Surface *source = in;
+	if (in->format->BytesPerPixel != 3 || in->format->BytesPerPixel != 4)
+	  source = convert_to_true_color(in);
 	static const Uint32 surface_create_mask 
 		= SDL_SWSURFACE | SDL_HWSURFACE | SDL_SRCCOLORKEY | SDL_SRCALPHA;
 
-	Uint32 flags = in->flags & surface_create_mask;
+	Uint32 flags = source->flags & surface_create_mask;
 	
-	SDL_Surface *scaled = SDL_CreateRGBSurface(flags, w, h, in->format->BitsPerPixel,
-		in->format->Rmask, in->format->Gmask, in->format->Bmask, in->format->Amask);
+	SDL_Surface *scaled = SDL_CreateRGBSurface(flags, w, h, source->format->BitsPerPixel,
+		source->format->Rmask, source->format->Gmask, source->format->Bmask, source->format->Amask);
 	if ( !scaled )
 		return NULL;
 
-	int Bpp = in->format->BytesPerPixel;
-	assert( Bpp == scaled->format->BytesPerPixel );
-	assert( Bpp == 3 || Bpp == 4 );
+	int bpp = source->format->BytesPerPixel;
+
+	assert( bpp == scaled->format->BytesPerPixel );
+	assert( bpp == 3 || bpp == 4 );
 
 	int x, y, i;
 	Uint8 c[4];
 	double u = 0.0, v = 0.0;
-	double du = (double)in->w / w;
-	double dv = (double)in->h / h;
+	double du = (double)source->w / w;
+	double dv = (double)source->h / h;
 	
-	int dr = scaled->pitch - (w * Bpp);
+	int dr = scaled->pitch - (w * bpp);
 
 	unsigned char *p = (unsigned char *)scaled->pixels;
 
@@ -740,13 +744,13 @@ SDL_Surface *slideshow::scale_image(SDL_Surface *in, int w, int h)
 
 		for(x = 0; x < w; x++)
 		{
-			bilinearpix(in, u, v, c);
+			bilinearpix(source, u, v, c);
 
-			for(i = 0; i < Bpp; i++)
+			for(i = 0; i < bpp; i++)
 			{
 				p[i] = c[i];
 			}
-			p += Bpp;
+			p += bpp;
 
 			u += du;
 		}
@@ -754,7 +758,8 @@ SDL_Surface *slideshow::scale_image(SDL_Surface *in, int w, int h)
 		p += dr;
 		v += dv;
 	}
-
+	if (source != in)
+	  delete source;
 	return scaled;
 }
 
