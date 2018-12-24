@@ -1,4 +1,3 @@
-// Copyright (C) 2003  Jeremy Stanley
 // This is free software licensed under the GNU GPL; see COPYING for details
 
 #if !defined(AFX_SLIDESHOW_H__A644DF2D_934C_44DE_B80C_E4DB28603405__INCLUDED_)
@@ -18,7 +17,7 @@
 #include <string>
 #include "cache.h"
 
-#define MN_SLIDESHOW_VERSION	0.8
+#define MN_SLIDESHOW_VERSION	0.9
 
 class file_list;
 class SDLFont;
